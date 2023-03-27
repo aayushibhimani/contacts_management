@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-{{-- {{var_dump($final_views[0])}} --}}
+
 <div class="container mt-5">
 
 

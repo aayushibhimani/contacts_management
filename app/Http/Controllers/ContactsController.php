@@ -105,7 +105,7 @@ class ContactsController extends Controller
         if($viewToday==null) 
         {
             // dd($viewToday);
-            $viewEachDay = View::create([
+            $viewToday = View::create([
                 'contact_id'=>$contact->id,
                 'views'=>'1',
                 'date'=>$date
@@ -118,9 +118,10 @@ class ContactsController extends Controller
             $viewToday->update(array('views' => $countTotalViews));
          }
 
+
          $lastSevenDaysViews = View::whereDate('created_at', Carbon::now()->subDays(1))
          ->get();
-        //  dd($lastSevenDaysViews);
+        //  dd($viewToday);
 
         //for the graph to get 7 days dates
         $my_dt = new DateTime($viewToday->date);
@@ -131,11 +132,15 @@ class ContactsController extends Controller
         $dates=array();
         $final_views = array();
 
-        for($i=0;$i<7;$i++){
+        //  dd($viewToday);
+        $final_views[]=$viewToday['views'];
+        // dd($final_views);
+
+        for($i=0;$i<6;$i++){
             $week_date=$my_dt->modify('-1 day');
             $week_date_formatted=$week_date->format('Y-m-d');
-            $views_on_each_day=View::where('date',$week_date_formatted)->first();
-            // dd($views_on_each_day->views);
+            $views_on_each_day=View::where('date',$week_date_formatted)->where('contact_id',$contact->id)->first();
+            // dd($views_on_each_day);
             $dates[]=$week_date_formatted;
             if(!$views_on_each_day['views']){
                 $final_views[]=0;
@@ -145,10 +150,22 @@ class ContactsController extends Controller
             }
         }
 
+        // dd($final_views);
+
         return view('contact',compact([
             'contact','dates','final_views'
         ]));
+
+     
+    
     }
+
+    public function display(){
+
+        
+    }
+
+
 
     /**
      * Show the form for editing the specified resource.
